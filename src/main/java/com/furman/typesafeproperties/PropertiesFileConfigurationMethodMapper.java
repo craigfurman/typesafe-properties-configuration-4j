@@ -21,16 +21,15 @@ class PropertiesFileConfigurationMethodMapper implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String configurationElementAsString = configMap.getProperty(getPropertyNameFromMethodName(method.getName()));
-        Class<?> returnType = method.getReturnType();
-        return resolveReturnTypeOfElement(configurationElementAsString, returnType);
+        return resolveReturnTypeOfElement(configurationElementAsString, method.getReturnType());
     }
 
     private Object resolveReturnTypeOfElement(String configurationElementAsString, Class<?> returnType) {
         if (returnType.equals(int.class)) {
-            return Integer.parseInt(configurationElementAsString);
+            return configurationElementAsString != null ? Integer.parseInt(configurationElementAsString) : 0;
         }
         else if (returnType.equals(long.class)) {
-            return Long.parseLong(configurationElementAsString);
+            return configurationElementAsString != null ? Long.parseLong(configurationElementAsString) : 0L;
         }
         else if (returnType.equals(boolean.class)) {
             return Boolean.parseBoolean(configurationElementAsString);

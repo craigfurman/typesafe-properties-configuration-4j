@@ -6,8 +6,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class PropertiesFileConfigurationMethodMapperTest {
 
@@ -41,6 +40,14 @@ public class PropertiesFileConfigurationMethodMapperTest {
     @Test
     public void shouldRetrieveBooleanConfigurationElement() {
         assertTrue(config.getBoolean());
+    }
+
+    @Test
+    public void shouldReturnDefaultValuesWhenElementDoesNotExist() {
+        assertNull(config.getNonExistentString());
+        assertThat(config.getNonExistentInt(), equalTo(0));
+        assertThat(config.getNonExistentLong(), equalTo(0L));
+        assertFalse(config.getNonExistentBoolean());
     }
 
 }

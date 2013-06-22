@@ -10,4 +10,12 @@ public interface TestConfig {
     long getLong();
 
     boolean getBoolean();
+
+    String getNonExistentString();
+
+    int getNonExistentInt();
+
+    boolean getNonExistentBoolean();
+
+    long getNonExistentLong();
 }
