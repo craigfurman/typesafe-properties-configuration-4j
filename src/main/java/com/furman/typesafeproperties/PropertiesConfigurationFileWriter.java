@@ -1,9 +1,6 @@
 package com.furman.typesafeproperties;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +18,10 @@ public class PropertiesConfigurationFileWriter {
 
     public static PropertiesConfigurationFileWriter getInstance() {
         return INSTANCE;
+    }
+
+    public static void main(final String[] args) throws ClassNotFoundException, IOException {
+        getInstance().createAndWriteConfigurationFile(Class.forName(args[0]), new FileOutputStream(args[1]));
     }
 
     public void createAndWriteConfigurationFile(Class<?> configurationInterface, OutputStream toWrite) throws IOException {
