@@ -62,4 +62,11 @@ public class PropertiesFileConfigurationMethodMapperTest {
         configWithExceptionsEnabled.getNonExistentIntWithException();
     }
 
+    @Test
+    public void shouldRetrieveBusinessObjectWithCommaSeparatedStringParameterList() {
+        TestBusinessObject businessObject = config.getBusinessObject();
+        assertThat(businessObject.getP1(), equalTo("p1"));
+        assertThat(businessObject.getP2(), equalTo("p2"));
+    }
+
 }

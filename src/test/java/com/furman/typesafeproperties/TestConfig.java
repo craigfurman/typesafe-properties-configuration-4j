@@ -22,4 +22,6 @@ public interface TestConfig {
     String getNonExistentStringWithException() throws ConfigurationException;
 
     int getNonExistentIntWithException() throws ConfigurationException;
+
+    TestBusinessObject getBusinessObject();
 }

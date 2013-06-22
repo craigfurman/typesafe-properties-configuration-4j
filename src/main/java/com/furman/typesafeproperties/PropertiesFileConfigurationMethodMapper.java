@@ -1,9 +1,13 @@
 package com.furman.typesafeproperties;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,31 +32,38 @@ class PropertiesFileConfigurationMethodMapper implements InvocationHandler {
         return resolveReturnTypeOfElement(configurationElementAsString, method.getReturnType(), propertyName);
     }
 
-    private Object resolveReturnTypeOfElement(String configurationElementAsString, Class<?> returnType, String propertyName) throws ConfigurationException {
+    private Object resolveReturnTypeOfElement(String configurationElementAsString, Class<?> returnType, String propertyName) throws ConfigurationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         if (configurationElementAsString == null) {
             return handleNonExistentElement(returnType, propertyName);
         }
-        else if (returnType.equals(int.class)) {
+        if (returnType.equals(String.class)) {
+            return configurationElementAsString;
+        } else if (returnType.equals(int.class)) {
             return Integer.parseInt(configurationElementAsString);
         } else if (returnType.equals(long.class)) {
             return Long.parseLong(configurationElementAsString);
         } else if (returnType.equals(boolean.class)) {
             return Boolean.parseBoolean(configurationElementAsString);
+        } else {
+            String[] parameterList = configurationElementAsString.split(",");
+            List<Class<String>> parameterTypeList = new ArrayList<>();
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < parameterList.length; i++) {
+                parameterTypeList.add(String.class);
+            }
+            Constructor<?> constructor = returnType.getConstructor(parameterTypeList.toArray(new Class[parameterTypeList.size()]));
+            return constructor.newInstance(parameterList);
         }
-        return configurationElementAsString;
     }
 
     private Object handleNonExistentElement(Class<?> returnType, String propertyName) throws ConfigurationException {
         if (throwExceptionWhenConfigurationElementNotFound) {
             throw new ConfigurationException(propertyName + " not found in configuration file.");
-        }
-        else if (returnType.equals(int.class)) {
+        } else if (returnType.equals(int.class)) {
             return 0;
-        }
-        else if (returnType.equals(long.class)) {
+        } else if (returnType.equals(long.class)) {
             return 0L;
-        }
-        else if (returnType.equals(boolean.class)) {
+        } else if (returnType.equals(boolean.class)) {
             return false;
         }
         return null;
