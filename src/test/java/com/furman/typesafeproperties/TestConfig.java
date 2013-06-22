@@ -6,4 +6,6 @@ public interface TestConfig {
     String getSomeNestedElement();
 
     int getInteger();
+
+    long getLong();
 }

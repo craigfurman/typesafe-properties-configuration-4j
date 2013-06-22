@@ -32,4 +32,9 @@ public class PropertiesFileConfigurationMethodMapperTest {
         assertThat(config.getInteger(), equalTo(42));
     }
 
+    @Test
+    public void shouldRetrieveLongConfigurationElement() {
+        assertThat(config.getLong(), equalTo(1L));
+    }
+
 }
