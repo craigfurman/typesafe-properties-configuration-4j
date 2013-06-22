@@ -2,6 +2,7 @@ package com.furman.typesafeproperties;
 
 import java.io.IOException;
 import java.lang.reflect.Proxy;
+import java.net.URL;
 
 public class ConfigurationFactory {
 
@@ -14,15 +15,15 @@ public class ConfigurationFactory {
         return INSTANCE;
     }
 
-    public <T> T createConfiguration(Class<T> configurationInterface, String propertiesFileClasspathAddress, boolean throwExceptionWhenConfigurationElementNotFound) throws IOException {
+    public <T> T createConfiguration(Class<T> configurationInterface, URL propertiesFile, boolean throwExceptionWhenConfigurationElementNotFound) throws IOException {
         //noinspection unchecked
         return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
                 new Class[]{configurationInterface},
-                new PropertiesFileConfigurationMethodMapper(propertiesFileClasspathAddress, throwExceptionWhenConfigurationElementNotFound));
+                new PropertiesFileConfigurationMethodMapper(propertiesFile, throwExceptionWhenConfigurationElementNotFound));
     }
 
-    public <T> T createConfiguration(Class<T> configurationInterface, String propertiesFileClasspathAddress) throws IOException {
-        return createConfiguration(configurationInterface, propertiesFileClasspathAddress, false);
+    public <T> T createConfiguration(Class<T> configurationInterface, URL propertiesFile) throws IOException {
+        return createConfiguration(configurationInterface, propertiesFile, false);
     }
 
 }

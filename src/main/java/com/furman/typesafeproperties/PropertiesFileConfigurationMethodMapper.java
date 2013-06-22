@@ -3,6 +3,7 @@ package com.furman.typesafeproperties;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,10 +15,10 @@ class PropertiesFileConfigurationMethodMapper implements InvocationHandler {
     private Properties configMap;
     private boolean throwExceptionWhenConfigurationElementNotFound;
 
-    public PropertiesFileConfigurationMethodMapper(String propertiesFileClasspathAddress, boolean throwExceptionWhenConfigurationElementNotFound) throws IOException {
+    public PropertiesFileConfigurationMethodMapper(URL propertiesFile, boolean throwExceptionWhenConfigurationElementNotFound) throws IOException {
         this.throwExceptionWhenConfigurationElementNotFound = throwExceptionWhenConfigurationElementNotFound;
         configMap = new Properties();
-        configMap.load(getClass().getResourceAsStream(propertiesFileClasspathAddress));
+        configMap.load(propertiesFile.openStream());
     }
 
     @Override

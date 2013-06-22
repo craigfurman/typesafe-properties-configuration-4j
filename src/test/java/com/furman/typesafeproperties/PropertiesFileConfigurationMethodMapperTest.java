@@ -1,6 +1,6 @@
 package com.furman.typesafeproperties;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -10,13 +10,13 @@ import static org.junit.Assert.*;
 
 public class PropertiesFileConfigurationMethodMapperTest {
 
-    private TestConfig config;
-    private TestConfig configWithExceptionsEnabled;
+    private static TestConfig config;
+    private static TestConfig configWithExceptionsEnabled;
 
-    @Before
-    public void setUp() throws IOException {
-        config = ConfigurationFactory.getInstance().createConfiguration(TestConfig.class, "/config/testconfig.properties");
-        configWithExceptionsEnabled = ConfigurationFactory.getInstance().createConfiguration(TestConfig.class, "/config/testconfig.properties", true);
+    @BeforeClass
+    public static void setUp() throws IOException {
+        config = ConfigurationFactory.getInstance().createConfiguration(TestConfig.class, PropertiesFileConfigurationMethodMapperTest.class.getResource("/config/testconfig.properties"));
+        configWithExceptionsEnabled = ConfigurationFactory.getInstance().createConfiguration(TestConfig.class, PropertiesFileConfigurationMethodMapperTest.class.getResource("/config/testconfig.properties"), true);
     }
 
     @Test
