@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PropertiesConfigurationFileWriter {
 
@@ -21,13 +24,29 @@ public class PropertiesConfigurationFileWriter {
     }
 
     public void createAndWriteConfigurationFile(Class<?> configurationInterface, OutputStream toWrite) throws IOException {
+        List<String> lines = createSortedListOfConfigLines(configurationInterface);
+        writeConfigLinesToFile(toWrite, lines);
+    }
+
+    private void writeConfigLinesToFile(OutputStream toWrite, List<String> lines) throws IOException {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(toWrite));
-        for (Method method : configurationInterface.getDeclaredMethods()) {
-            writer.write(propertiesFileNameCalculator.getPropertyNameFromMethodName(method.getName()));
-            writer.write(" = ");
-            writer.write(DEFAULT_PLACEHOLDER_VALUE);
+        for (String line : lines) {
+            writer.write(line);
             writer.write("\n");
         }
         writer.close();
+    }
+
+    private List<String> createSortedListOfConfigLines(Class<?> configurationInterface) {
+        List<String> lines = new ArrayList<>();
+        for (Method method : configurationInterface.getDeclaredMethods()) {
+            StringBuilder lineBuilder = new StringBuilder();
+            lineBuilder.append(propertiesFileNameCalculator.getPropertyNameFromMethodName(method.getName()));
+            lineBuilder.append(" = ");
+            lineBuilder.append(DEFAULT_PLACEHOLDER_VALUE);
+            lines.add(lineBuilder.toString());
+        }
+        Collections.sort(lines);
+        return lines;
     }
 }
