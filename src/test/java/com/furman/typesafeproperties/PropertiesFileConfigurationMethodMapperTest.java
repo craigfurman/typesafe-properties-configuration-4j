@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class PropertiesFileConfigurationMethodMapperTest {
 
@@ -35,6 +36,11 @@ public class PropertiesFileConfigurationMethodMapperTest {
     @Test
     public void shouldRetrieveLongConfigurationElement() {
         assertThat(config.getLong(), equalTo(1L));
+    }
+
+    @Test
+    public void shouldRetrieveBooleanConfigurationElement() {
+        assertTrue(config.getBoolean());
     }
 
 }

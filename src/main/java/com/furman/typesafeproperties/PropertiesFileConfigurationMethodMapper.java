@@ -32,6 +32,9 @@ class PropertiesFileConfigurationMethodMapper implements InvocationHandler {
         else if (returnType.equals(long.class)) {
             return Long.parseLong(configurationElementAsString);
         }
+        else if (returnType.equals(boolean.class)) {
+            return Boolean.parseBoolean(configurationElementAsString);
+        }
         return configurationElementAsString;
     }
 

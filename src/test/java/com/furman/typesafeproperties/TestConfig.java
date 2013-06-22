@@ -8,4 +8,6 @@ public interface TestConfig {
     int getInteger();
 
     long getLong();
+
+    boolean getBoolean();
 }
