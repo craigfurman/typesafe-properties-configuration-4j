@@ -27,4 +27,9 @@ public class PropertiesFileConfigurationMethodMapperTest {
         assertThat(config.getSomeNestedElement(), equalTo("some value"));
     }
 
+    @Test
+    public void shouldRetrieveIntegerConfigurationElement() {
+        assertThat(config.getInteger(), equalTo(42));
+    }
+
 }
