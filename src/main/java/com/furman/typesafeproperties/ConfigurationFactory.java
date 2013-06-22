@@ -10,15 +10,19 @@ public class ConfigurationFactory {
     private ConfigurationFactory() {
     }
 
-    public static ConfigurationFactory newInstance() {
+    public static ConfigurationFactory getInstance() {
         return INSTANCE;
     }
 
-    public <T> T createConfiguration(Class<T> configurationInterface, String propertiesFileClasspathAddress) throws IOException {
+    public <T> T createConfiguration(Class<T> configurationInterface, String propertiesFileClasspathAddress, boolean throwExceptionWhenConfigurationElementNotFound) throws IOException {
         //noinspection unchecked
         return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
                 new Class[]{configurationInterface},
-                new PropertiesFileConfigurationMethodMapper(propertiesFileClasspathAddress));
+                new PropertiesFileConfigurationMethodMapper(propertiesFileClasspathAddress, throwExceptionWhenConfigurationElementNotFound));
+    }
+
+    public <T> T createConfiguration(Class<T> configurationInterface, String propertiesFileClasspathAddress) throws IOException {
+        return createConfiguration(configurationInterface, propertiesFileClasspathAddress, false);
     }
 
 }

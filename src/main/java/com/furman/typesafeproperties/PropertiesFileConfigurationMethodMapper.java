@@ -9,32 +9,52 @@ import java.util.regex.Pattern;
 
 class PropertiesFileConfigurationMethodMapper implements InvocationHandler {
 
-    private Properties configMap;
-
     private static final Pattern WORD_BEGINNING_WITH_CAPITAL_LETTER = Pattern.compile("[A-Z][^A-Z]*");
 
-    public PropertiesFileConfigurationMethodMapper(String propertiesFileClasspathAddress) throws IOException {
+    private Properties configMap;
+    private boolean throwExceptionWhenConfigurationElementNotFound;
+
+    public PropertiesFileConfigurationMethodMapper(String propertiesFileClasspathAddress, boolean throwExceptionWhenConfigurationElementNotFound) throws IOException {
+        this.throwExceptionWhenConfigurationElementNotFound = throwExceptionWhenConfigurationElementNotFound;
         configMap = new Properties();
         configMap.load(getClass().getResourceAsStream(propertiesFileClasspathAddress));
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        String configurationElementAsString = configMap.getProperty(getPropertyNameFromMethodName(method.getName()));
-        return resolveReturnTypeOfElement(configurationElementAsString, method.getReturnType());
+        String propertyName = getPropertyNameFromMethodName(method.getName());
+        String configurationElementAsString = configMap.getProperty(propertyName);
+        return resolveReturnTypeOfElement(configurationElementAsString, method.getReturnType(), propertyName);
     }
 
-    private Object resolveReturnTypeOfElement(String configurationElementAsString, Class<?> returnType) {
-        if (returnType.equals(int.class)) {
-            return configurationElementAsString != null ? Integer.parseInt(configurationElementAsString) : 0;
+    private Object resolveReturnTypeOfElement(String configurationElementAsString, Class<?> returnType, String propertyName) throws ConfigurationException {
+        if (configurationElementAsString == null) {
+            return handleNonExistentElement(returnType, propertyName);
         }
-        else if (returnType.equals(long.class)) {
-            return configurationElementAsString != null ? Long.parseLong(configurationElementAsString) : 0L;
-        }
-        else if (returnType.equals(boolean.class)) {
+        else if (returnType.equals(int.class)) {
+            return Integer.parseInt(configurationElementAsString);
+        } else if (returnType.equals(long.class)) {
+            return Long.parseLong(configurationElementAsString);
+        } else if (returnType.equals(boolean.class)) {
             return Boolean.parseBoolean(configurationElementAsString);
         }
         return configurationElementAsString;
+    }
+
+    private Object handleNonExistentElement(Class<?> returnType, String propertyName) throws ConfigurationException {
+        if (throwExceptionWhenConfigurationElementNotFound) {
+            throw new ConfigurationException(propertyName + " not found in configuration file.");
+        }
+        else if (returnType.equals(int.class)) {
+            return 0;
+        }
+        else if (returnType.equals(long.class)) {
+            return 0L;
+        }
+        else if (returnType.equals(boolean.class)) {
+            return false;
+        }
+        return null;
     }
 
     private String getPropertyNameFromMethodName(String methodName) {

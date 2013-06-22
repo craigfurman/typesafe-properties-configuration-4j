@@ -18,4 +18,8 @@ public interface TestConfig {
     boolean getNonExistentBoolean();
 
     long getNonExistentLong();
+
+    String getNonExistentStringWithException() throws ConfigurationException;
+
+    int getNonExistentIntWithException() throws ConfigurationException;
 }

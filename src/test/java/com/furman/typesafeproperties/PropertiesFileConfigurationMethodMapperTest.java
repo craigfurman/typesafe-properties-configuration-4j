@@ -11,10 +11,12 @@ import static org.junit.Assert.*;
 public class PropertiesFileConfigurationMethodMapperTest {
 
     private TestConfig config;
+    private TestConfig configWithExceptionsEnabled;
 
     @Before
     public void setUp() throws IOException {
-        config = ConfigurationFactory.newInstance().createConfiguration(TestConfig.class, "/config/testconfig.properties");
+        config = ConfigurationFactory.getInstance().createConfiguration(TestConfig.class, "/config/testconfig.properties");
+        configWithExceptionsEnabled = ConfigurationFactory.getInstance().createConfiguration(TestConfig.class, "/config/testconfig.properties", true);
     }
 
     @Test
@@ -48,6 +50,16 @@ public class PropertiesFileConfigurationMethodMapperTest {
         assertThat(config.getNonExistentInt(), equalTo(0));
         assertThat(config.getNonExistentLong(), equalTo(0L));
         assertFalse(config.getNonExistentBoolean());
+    }
+
+    @Test(expected = ConfigurationException.class)
+    public void shouldThrowExceptionWhenSpecifiedInFactoryAndConfigurationElementDoesNotExist() throws  ConfigurationException {
+        configWithExceptionsEnabled.getNonExistentStringWithException();
+    }
+
+    @Test(expected = ConfigurationException.class)
+    public void shouldThrowExceptionWhenSpecifiedInFactoryAndConfigurationElementDoesNotExistForIntegerReturnType() throws ConfigurationException {
+        configWithExceptionsEnabled.getNonExistentIntWithException();
     }
 
 }
